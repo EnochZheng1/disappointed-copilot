@@ -1,0 +1,22 @@
+# Desktop development overrides — webcam + Ultralytics YOLO (no Coral needed)
+
+camera:
+  backend: webcam
+  device_index: 0
+
+detector:
+  backend: ultralytics
+  model_path: models/yolov8n.pt
+  detect_every_n_frames: 1
+
+lane:
+  lane_every_n_frames: 1
+
+commentary:
+  llm_enabled: false  # Enable when Ollama is running locally
+
+recording:
+  enabled: false  # Disable clip recording during dev
+
+debug_display: true
+log_level: DEBUG

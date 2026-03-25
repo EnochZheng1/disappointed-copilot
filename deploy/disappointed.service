@@ -1,0 +1,24 @@
+[Unit]
+Description=Disappointed Co-Pilot Dashcam
+After=multi-user.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/disappointed
+ExecStart=/opt/disappointed/venv/bin/python -m disappointed --config config/default.yaml config/pi_deploy.yaml
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Resource limits
+MemoryMax=6G
+CPUQuota=90%
+
+# Environment
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,57 @@
+# Disappointed Co-Pilot — Default Configuration
+# Override per-environment with desktop_dev.yaml or pi_deploy.yaml
+
+camera:
+  width: 1280
+  height: 720
+  fps: 30
+
+detector:
+  confidence_threshold: 0.5
+  nms_threshold: 0.45
+  input_size: 320
+  target_classes: [0, 1, 2, 3, 5, 7, 9]  # person, bicycle, car, motorcycle, bus, truck, traffic_light
+  detect_every_n_frames: 1
+
+lane:
+  enabled: true
+  canny_low: 50
+  canny_high: 150
+  ema_alpha: 0.3
+  confidence_threshold: 0.3
+
+triggers:
+  tailgater:
+    enabled: true
+    cooldown_seconds: 15.0
+  swerver:
+    enabled: true
+    cooldown_seconds: 15.0
+  green_light:
+    enabled: true
+    cooldown_seconds: 15.0
+  self_critique:
+    enabled: true
+    cooldown_seconds: 15.0
+  hard_brake:
+    enabled: true
+    cooldown_seconds: 15.0
+
+commentary:
+  voice_pack: british_instructor
+  llm_enabled: false
+
+recording:
+  enabled: true
+  output_dir: clips
+  hot_buffer_seconds: 60
+  pre_trigger_seconds: 30
+  post_trigger_seconds: 15
+
+audio:
+  enabled: true
+  volume: 0.8
+  cooldown_seconds: 10.0
+
+debug_display: true
+log_level: INFO

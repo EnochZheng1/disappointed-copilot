@@ -1,0 +1,28 @@
+# Raspberry Pi 5 + Google Coral deployment overrides
+
+camera:
+  backend: picamera2
+  width: 1280
+  height: 720
+  fps: 30
+
+detector:
+  backend: coral
+  edgetpu_model_path: models/yolov8n_full_integer_quant_edgetpu.tflite
+  input_size: 320
+  detect_every_n_frames: 2  # Run detection every other frame for 30fps target
+
+lane:
+  lane_every_n_frames: 3  # Lane detection every 3rd frame
+
+commentary:
+  llm_enabled: true
+  llm_cpu_threshold: 0.7
+  ollama_model: "llama3.2:1b"
+
+recording:
+  enabled: true
+  output_dir: /media/usb/clips
+
+debug_display: false  # No display on headless Pi
+log_level: INFO

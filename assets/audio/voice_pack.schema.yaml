@@ -1,0 +1,46 @@
+# Voice Pack Schema
+# Each voice pack is a directory under assets/audio/ with this structure:
+#
+# assets/audio/{pack_name}/
+#   tailgater/       # Audio files for tailgater events
+#     001_xxxx.wav
+#     002_xxxx.wav
+#   swerver/         # Audio files for swerver events
+#   green_light/     # Audio files for green light lingerer events
+#   self_critique/   # Audio files for self-critique events
+#   hard_brake/      # Audio files for hard brake events
+#   general/         # Fallback audio for any trigger type
+#
+# Audio files:
+#   - Format: WAV (preferred) or MP3
+#   - Sample rate: 22050 Hz (recommended)
+#   - Channels: Mono
+#   - Each file should be a single short roast/comment (1-5 seconds)
+#   - The system will randomly select one file per trigger event
+#
+# To create a custom voice pack:
+#   1. Create a new directory under assets/audio/ (e.g. assets/audio/my_pack/)
+#   2. Create subdirectories for each trigger type you want to support
+#   3. Add WAV files to each trigger directory
+#   4. Set voice_pack: "my_pack" in your config YAML
+#
+# Minimum viable voice pack:
+#   - At least one audio file in the "general/" folder (used as fallback)
+#
+# For LLM-generated commentary, also add a persona entry in:
+#   src/disappointed/commentary/personas.py
+
+voice_pack:
+  name: string          # Directory name under assets/audio/
+  trigger_types:        # Must match trigger names in the system
+    - tailgater
+    - swerver
+    - green_light
+    - self_critique
+    - hard_brake
+    - general           # Fallback for any unmatched trigger
+  audio_format:
+    preferred: wav
+    supported: [wav, mp3]
+    sample_rate: 22050
+    channels: 1

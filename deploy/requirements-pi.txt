@@ -1,0 +1,12 @@
+# Raspberry Pi 5 specific pinned dependencies
+# Install with: pip install -r deploy/requirements-pi.txt
+
+opencv-python-headless>=4.8
+pydantic>=2.0
+pyyaml>=6.0
+pygame>=2.5
+numpy>=1.24
+httpx>=0.25
+
+# Note: picamera2, pycoral, and tflite-runtime are installed
+# via system packages (apt) and accessed via --system-site-packages
