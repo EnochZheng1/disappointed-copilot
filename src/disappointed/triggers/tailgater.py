@@ -77,6 +77,7 @@ class TailgaterTrigger(Trigger):
                 continue
 
             growth_rate = (area_end - area_start) / (area_start * dt)
+            self._report_diagnostics("growth_rate", growth_rate, self._config.bbox_growth_rate_threshold)
 
             if growth_rate >= self._config.bbox_growth_rate_threshold:
                 return TriggerEvent(

@@ -57,8 +57,8 @@ class GreenLightTrigger(Trigger):
         # We're stopped at a green light
         if self._green_start_time is None:
             self._green_start_time = now
-
         elapsed = now - self._green_start_time
+        self._report_diagnostics("green_wait_seconds", elapsed, self._config.green_detected_seconds)
         if elapsed >= self._config.green_detected_seconds:
             self._green_start_time = None  # Reset after trigger
             return TriggerEvent(

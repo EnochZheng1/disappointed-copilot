@@ -28,17 +28,32 @@ class ClipRequest:
 class ClipExtractor:
     """Extracts clip segments from the ring buffer and encodes them as MP4 with overlays."""
 
-    def __init__(self, config: RecordingConfig):
+    def __init__(self, config: RecordingConfig, dedup_window: float = 10.0):
         self._config = config
         self._output_dir = Path(config.output_dir)
         self._output_dir.mkdir(parents=True, exist_ok=True)
         self._overlay = OverlayRenderer()
+        self._dedup_window = dedup_window
+        self._last_clip_time: float = 0.0
+
+    def should_extract(self, request: ClipRequest) -> bool:
+        """Check if this clip request should be processed (dedup)."""
+        if (request.requested_at - self._last_clip_time) < self._dedup_window:
+            logger.info(
+                f"Clip dedup: skipping {request.event.trigger_name} "
+                f"({request.requested_at - self._last_clip_time:.1f}s since last clip)"
+            )
+            return False
+        return True
 
     def extract_clip(self, ring_buffer: RingBuffer, request: ClipRequest) -> Path | None:
         """Extract frames from the ring buffer and encode to an MP4 clip.
 
         Should be called AFTER the post-trigger window has elapsed.
         """
+        if not self.should_extract(request):
+            return None
+
         total_seconds = request.pre_seconds + request.post_seconds
         frames, timestamps = ring_buffer.read_seconds(total_seconds)
 
@@ -79,6 +94,7 @@ class ClipExtractor:
             writer.write(frame)
 
         writer.release()
+        self._last_clip_time = time.time()
 
         duration = len(frames) / ring_buffer.fps
         file_size_mb = output_path.stat().st_size / (1024 * 1024)

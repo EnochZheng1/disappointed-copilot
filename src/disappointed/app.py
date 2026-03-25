@@ -135,7 +135,7 @@ def _create_llm_engine(config: AppConfig) -> Optional[CommentaryEngine]:
     )
 
 
-def create_and_run(config: AppConfig, demo_interval: float | None = None) -> None:
+def create_and_run(config: AppConfig, demo_interval: float | None = None, tune_mode: bool = False) -> None:
     """Create all components from config and run the pipeline."""
     logger.info(f"Camera: {config.camera.backend.value}")
     logger.info(f"Detector: {config.detector.backend.value}")
@@ -150,6 +150,9 @@ def create_and_run(config: AppConfig, demo_interval: float | None = None) -> Non
     detector = _create_detector(config)
     lane_detector = _create_lane_detector(config)
     trigger_registry = _create_trigger_registry(config)
+    if tune_mode:
+        logger.info("TUNE MODE: trigger diagnostics enabled")
+        trigger_registry.set_tune_mode(True)
     prebaked_engine = _create_prebaked_engine(config)
     llm_engine = _create_llm_engine(config)
 

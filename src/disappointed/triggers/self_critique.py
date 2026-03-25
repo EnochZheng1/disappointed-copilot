@@ -29,6 +29,7 @@ class SelfCritiqueTrigger(Trigger):
             return None
 
         offset = abs(lane.own_offset_from_center)
+        self._report_diagnostics("lane_offset", offset, self._config.departure_threshold)
         if offset > self._config.departure_threshold:
             self._departure_frames += 1
         else:

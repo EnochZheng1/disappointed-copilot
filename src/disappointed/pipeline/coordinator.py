@@ -125,6 +125,44 @@ def _draw_trigger_status(frame: np.ndarray, events: list[TriggerEvent]) -> None:
         y += 25
 
 
+def _draw_tune_hud(frame: np.ndarray, diagnostics: list) -> None:
+    """Draw trigger tuning diagnostics on the right side of the frame."""
+    h, w = frame.shape[:2]
+    x = w - 350
+    y = 30
+
+    # Header
+    cv2.putText(frame, "TRIGGER TUNING", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA)
+    y += 22
+
+    for diag in diagnostics:
+        # Progress bar
+        bar_w = 150
+        bar_h = 12
+        progress = min(diag.progress, 1.5)  # Cap at 150%
+
+        # Color: green (low) -> yellow (medium) -> red (near threshold)
+        if progress < 0.5:
+            color = (0, 180, 0)
+        elif progress < 0.8:
+            color = (0, 220, 220)
+        else:
+            color = (0, 0, 255)
+
+        # Background bar
+        cv2.rectangle(frame, (x, y), (x + bar_w, y + bar_h), (60, 60, 60), -1)
+        # Fill bar
+        fill_w = int(bar_w * min(progress, 1.0))
+        cv2.rectangle(frame, (x, y), (x + fill_w, y + bar_h), color, -1)
+        # Threshold marker
+        cv2.line(frame, (x + bar_w, y), (x + bar_w, y + bar_h), (255, 255, 255), 1)
+
+        # Label
+        label = f"{diag.trigger_name}: {diag.pct}"
+        cv2.putText(frame, label, (x + bar_w + 8, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.38, color, 1, cv2.LINE_AA)
+        y += 20
+
+
 def _draw_fps(frame: np.ndarray, fps: float, inference_ms: float) -> None:
     """Draw FPS and inference time on the top-left corner."""
     text = f"FPS: {fps:.1f} | Inference: {inference_ms:.1f}ms"
@@ -156,6 +194,7 @@ class PipelineCoordinator:
         self.prebaked_engine = prebaked_engine
         self.llm_engine = llm_engine
         self._demo_interval = demo_interval
+        self._tune_mode = any(t.tune_mode for t in (trigger_registry._triggers if trigger_registry else []))
 
         self.tracker = CentroidTracker() if detector else None
         self._fps_counter = FPSCounter()
@@ -277,6 +316,10 @@ class PipelineCoordinator:
                         _draw_lane_state(display_frame, frame_data.lane_state)
                     if frame_data.trigger_events:
                         _draw_trigger_status(display_frame, frame_data.trigger_events)
+                    if self._tune_mode and self.trigger_registry:
+                        diags = self.trigger_registry.get_diagnostics()
+                        if diags:
+                            _draw_tune_hud(display_frame, diags)
                     _draw_fps(display_frame, frame_data.fps, inference_ms)
 
                     cv2.imshow("Disappointed Co-Pilot", display_frame)

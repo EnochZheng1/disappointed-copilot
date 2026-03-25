@@ -37,3 +37,5 @@ Thumbs.db
 
 # Piper TTS voices
 models/*.onnx.json
+
+test_video/

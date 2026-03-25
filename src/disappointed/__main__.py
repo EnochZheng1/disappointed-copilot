@@ -39,6 +39,11 @@ def main():
         metavar="SECONDS",
         help="Demo mode: fire a random trigger every N seconds to test audio",
     )
+    parser.add_argument(
+        "--tune",
+        action="store_true",
+        help="Tuning mode: show trigger diagnostics on screen (how close each trigger is to firing)",
+    )
     args = parser.parse_args()
 
     config = load_config(*[Path(p) for p in args.config])
@@ -58,7 +63,7 @@ def main():
     )
 
     try:
-        create_and_run(config, demo_interval=args.demo)
+        create_and_run(config, demo_interval=args.demo, tune_mode=args.tune)
     except KeyboardInterrupt:
         logging.info("Shutting down...")
         sys.exit(0)

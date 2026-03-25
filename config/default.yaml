@@ -23,19 +23,19 @@ lane:
 triggers:
   tailgater:
     enabled: true
-    cooldown_seconds: 15.0
+    cooldown_seconds: 10.0
   swerver:
     enabled: true
-    cooldown_seconds: 15.0
+    cooldown_seconds: 10.0
   green_light:
     enabled: true
-    cooldown_seconds: 15.0
+    cooldown_seconds: 10.0
   self_critique:
     enabled: true
-    cooldown_seconds: 15.0
+    cooldown_seconds: 12.0
   hard_brake:
     enabled: true
-    cooldown_seconds: 15.0
+    cooldown_seconds: 10.0
 
 commentary:
   voice_pack: british_instructor
@@ -51,7 +51,7 @@ recording:
 audio:
   enabled: true
   volume: 0.8
-  cooldown_seconds: 10.0
+  cooldown_seconds: 5.0
 
 debug_display: true
 log_level: INFO

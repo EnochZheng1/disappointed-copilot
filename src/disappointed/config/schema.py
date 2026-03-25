@@ -55,39 +55,39 @@ class LaneConfig(BaseModel):
 
 
 class TriggerConfig(BaseModel):
-    cooldown_seconds: float = 15.0
+    cooldown_seconds: float = 10.0  # Lowered from 15s for more active commentary
 
 
 class TailgaterConfig(TriggerConfig):
     enabled: bool = True
-    bbox_growth_rate_threshold: float = 0.15  # 15% growth per second
-    min_bbox_area_ratio: float = 0.02
-    consecutive_frames: int = 10
+    bbox_growth_rate_threshold: float = 0.08  # 8% growth per second (was 15% — too strict)
+    min_bbox_area_ratio: float = 0.008  # Detect smaller/farther cars (was 0.02)
+    consecutive_frames: int = 6  # ~0.2s at 30fps (was 10)
 
 
 class SwerverConfig(TriggerConfig):
     enabled: bool = True
     lane_cross_ratio: float = 0.3
-    consecutive_frames: int = 5
+    consecutive_frames: int = 4  # ~0.13s (was 5)
 
 
 class GreenLightConfig(TriggerConfig):
     enabled: bool = True
-    green_detected_seconds: float = 3.0
-    speed_threshold: float = 2.0  # Sparse optical flow magnitude
+    green_detected_seconds: float = 2.5  # Quicker trigger (was 3.0)
+    speed_threshold: float = 1.5  # More sensitive to being stopped (was 2.0)
     max_feature_points: int = 20
 
 
 class SelfCritiqueConfig(TriggerConfig):
     enabled: bool = True
-    departure_threshold: float = 0.15
+    departure_threshold: float = 0.12  # Slightly more sensitive (was 0.15)
 
 
 class HardBrakeConfig(TriggerConfig):
     enabled: bool = True
-    bbox_growth_rate_threshold: float = 0.25  # All vehicles growing simultaneously
-    min_tracked_vehicles: int = 2
-    consecutive_frames: int = 5
+    bbox_growth_rate_threshold: float = 0.18  # Lowered from 0.25
+    min_tracked_vehicles: int = 1  # Fire with just 1 vehicle (was 2 — too strict)
+    consecutive_frames: int = 4  # Faster response (was 5)
 
 
 class TriggersConfig(BaseModel):
@@ -121,7 +121,7 @@ class RecordingConfig(BaseModel):
 class AudioConfig(BaseModel):
     enabled: bool = True
     volume: float = 0.8
-    cooldown_seconds: float = 10.0  # Global cooldown between any audio
+    cooldown_seconds: float = 5.0  # Global cooldown between any audio (was 10s)
 
 
 class AppConfig(BaseModel):

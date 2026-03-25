@@ -73,6 +73,10 @@ class HardBrakeTrigger(Trigger):
             growth_rate = (area_end - area_start) / (area_start * dt)
             growth_rates.append(growth_rate)
 
+        if growth_rates:
+            min_rate = min(growth_rates)
+            self._report_diagnostics("min_vehicle_growth", min_rate, self._config.bbox_growth_rate_threshold)
+
         if not growth_rates:
             return None
 
